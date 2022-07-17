@@ -4,4 +4,4 @@
 
 ## Getting Started
 
-- [Typescript Basics & Basic Types](https://github.com/ichbinmin2/udemy-react-ts-redux-nextjs-study/blob/main/section-01/section01.md)
+- [Typescript Basics & Basic Types](https://github.com/ichbinmin2/typescript_basic/blob/main/section-01/section01.md)
