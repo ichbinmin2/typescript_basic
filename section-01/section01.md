@@ -1,4 +1,4 @@
-## Typescript Basics & Basic Types
+## Getting Started
 
 ### typescript 설치
 
@@ -25,4 +25,4 @@ npm install typescript
 - 특저 메타 프로그래밍 기능인 Decorators 를 사용할 수 있다.
 - 최신 툴과 IDE를 사용하여 타입스크립트가 아닌 프로젝트에서도 도움을 받을 수 있다. 이는 타입스크립트를 명시적으로 사용하지 않고도 내부에서 타입의 기능을 '일부' 사용할 수 있다. 최신 툴인 비주얼 스튜디오 코드는 일반 자바스크립트 파일에 큰 도움을 준다.
 
-</>
+<br/>
