@@ -5,6 +5,7 @@
 - [Using Types](#Using-Types)
 - [TypeScript Types vs JavaScript Types](#TypeScript-타입-vs-JavaScript-타입)
 - [Working with Numbers, Strings & Booleans](#숫자-문자열-및-불리언-작업하기)
+- [Object Type](#객체-형태)
 
 ### Using Types
 
@@ -96,3 +97,4 @@ add(number1, number2, printResult); // 7.8
 ```
 
 </br>
+
