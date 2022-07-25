@@ -2,6 +2,7 @@
 
 > Udemy의 [Typescript :기초부터 실전형 프로젝트까지 with React + NodeJS]를 베이스로 한 스터디 기록입니다.
 
-## Getting Started
+## Getting Started & Typescript Basics
 
-- [Typescript Basics & Basic Types](https://github.com/ichbinmin2/typescript_basic/blob/main/section-01/section01.md)
+- [Getting Started](https://github.com/ichbinmin2/typescript_basic/blob/main/section-01/section01.md)
+- [Typescript Basics & Basic Types](https://github.com/ichbinmin2/typescript_basic/blob/main/section-02/section02.md)

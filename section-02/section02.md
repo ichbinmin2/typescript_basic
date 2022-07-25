@@ -7,6 +7,7 @@
 - [Working with Numbers, Strings & Booleans](#숫자-문자열-및-불리언-작업하기)
 - [Object Type](#객체-형태)
 - [중첩된 객체 타입](#중첩된-객체-타입)
+- [배열 타입](#배열-타입)
 
 ### Using Types
 
