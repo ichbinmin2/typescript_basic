@@ -11,6 +11,7 @@
 - [튜플 작업하기](#튜플-작업하기)
 - [enum 열거형으로 작업하기](#enum-열거형으로-작업하기)
 - [any 타입](#any-타입)
+- [union 타입](#union-타입)
 
 ### Using Types
 
@@ -351,5 +352,70 @@ enum Role {
 ### any 타입의 문제점
 
 - `any`는 아주 유연하고 훌륭한 타입처럼 보이지만, 이것이 지닌 큰 단점 때문에 `any`를 가능한 쓰지 않아야 겠다고 생각하게 될 것이다. 왜냐하면 타입스크립트를 사용함으로써 가지게 되는 모든 장점을 `any`가 상쇄시켜 그저 바닐라 자바스크립트를 사용할 때와 다를 바가 없게 되기 때문이다. `any` 또는 `any` 변수가 어떤 값도 저장하지 않기 때문에 컴파일러가 검사할 부분이 없어진다. 따라서 `any`를 사용해야만 하는 몇 가지 이유가 있을 때에만 사용해야 한다. 이를 테면 어떠한 값이나 종류의 데이터가 어디에 저장될지 전혀 알 수 없는 경우를 대비하거나, 런타임 검사를 수행하는 경우 도중에 특정 값에 수행 하는 작업의 범위를 좁힐 때에만 말이다. 그외에는 `any` 타입을 가능한 사용하지 않는 게 좋다.
+
+</br>
+
+## union 타입
+
+- 숫자와 문자열로 작업 가능한 유연한 조합의 함수를 포함하는 어플리케이션을 구축할 수 있도록 우리는 `union` 타입을 사용해보려고 한다.
+
+```js
+function combine(input1: number, input2: number) {
+  const result = input1 + input2;
+  return result;
+}
+
+const combinedAges = combine(30, 26);
+console.log(combinedAges); // 56
+
+const combinedNames = combine("Max", "Anna");
+
+console.log(combinedNames); // error !!!!
+```
+
+- 위의 코드인 경우, 문제가 있다. 지금은 함수에서 받는 매개변수 모두 숫자 타입으로 설정되어 있기 때문에 숫자로 작업을 하는 경우 해당 함수를 호출할 수 있지만, 문자열로 작업을 하는 경우, 즉시 에러가 발생하기 때문이다. 물론, 매개 변수의 타입을 문자열로 변환할 수도 있지만 그렇게 되면 숫자로 작업을 할 수 없게 된다. 이럴 때 우리는 `union` 타입을 사용해서 문제를 해결할 수 있다.
+
+```js
+function combine(input1: number | string, input2: number | string) {
+  const result = input1 + input2;
+
+  return result;
+}
+
+const combinedAges = combine(30, 26);
+console.log(combinedAges); // 56
+
+const combinedNames = combine("Max", "Anna");
+console.log(combinedNames); // MaxAnna
+```
+
+- 두 종류(숫자, 문자열)의 값을 사용해야 하는 어플리케이션에서 매개변수를 유연하게 받아오기 위해서는 `union` 타입을 사용하여 타입스크립트에세 숫자나 문자열 중 하나를 사용해도 괜찮다는 것을 알려야 한다. 이때 우리는 파이프 기호`|` 을 사용하여 다른 타입을 입력하면 된다. 이처럼 예시의 두 가지 이상의 타입이나 혹은 그 이상의 타입을 필요한 만큼 사용할 수 있게 된다. 하지만 더하기 연산자에서는 '문자열'이나 '숫자' 타입을 적용할 수 없다는 에러가 발생한다. 물론 더하기 연산자는 숫자와 문자열 모두 사용할 수 있으므로 문제가 없어야 하지만, 더하기 연산자를 사용할 수 없는 타입도 있을 것이라고 타입스크립트는 이해하고 있는 것이다. 이를 해결하기 위해서는 간단한 런타임 검사를 추가하여 매개변수가 숫자 타입일 때와 문자열 타입일 때를 각각 다르게 연산하여 반환할 수 있다.
+
+```js
+function combine(input1: number | string, input2: number | string) {
+  let result;
+  // 런타임 검사 추가
+  if (typeof input1 === "number" && typeof input2 === "number") {
+    // number type
+    result = input1 + input2;
+  } else {
+    // string type
+    result = input1.toString() + input2.toString();
+  }
+  return result;
+}
+
+const combinedAges = combine(30, 26);
+console.log(combinedAges); // 56
+
+const combinedNames = combine("Max", "Anna");
+console.log(combinedNames); // MaxAnna
+```
+
+- 이제 두 문자열을 연결할 수 있기 때문에 더이상 에러가 발생하지 않는다.
+
+### 정리
+
+- 코드의 어느 위치에서든 함수 내에서 수행하는 작업과 관련하여 보다 유연하게 유니언 타입을 활용할 수 있다. (물론 추가적인 런타임 검사는 `union` 타입을 사용하여 작업할 때에 종종 필요한 부분이니 기억해두자.) 이처럼 `union` 타입을 사용하면 코드에 적용한 매개변수를 보다 유연하게 사용할 수 있다. 그런데 이를 사용했을 때 타입에 따라 함수 내에 다른 로직을 적용할 수 있으므로 함수가 여러 유형의 값으로 작동할 수 있게 된다. 물론 타입에 따라 조금씩 달라지므로 `union` 타입으로 작업할 때 위의 경우처럼 종종 런타임 검사가 필요한 경우도 있고, 프로그램에 따라 런타임 검사를 수행하지 않아도 `union` 타입을 사용할 수 있는 경우도 있다. 단지 구성하는 로직이 어떤 식이냐에 따라 달린 문제이다.
 
 </br>
