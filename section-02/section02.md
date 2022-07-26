@@ -9,6 +9,7 @@
 - [중첩된 객체 타입](#중첩된-객체-타입)
 - [배열 타입](#배열-타입)
 - [튜플 작업하기](#튜플-작업하기)
+- [enum 열거형으로 작업하기](#enum-열거형으로-작업하기)
 
 ### Using Types
 
@@ -161,5 +162,183 @@ const person: {
 ```
 
 - `role`은 Tuple 타입이다. 그리고 person은 한 가지의 `role`만 가질 수 있고 `role`은 두개의 요소로만 구성되어 있기 때문에 항상 두 개의 요소만 지녀야만 한다.
+
+</br>
+
+## enum 열거형으로 작업하기
+
+- `enum` 타입은 다른 프로그래밍 언어에도 존재하는 타입이지만 자바스크립트에서는 존재하지 않는 타입이다. 타입스크립트에만 존재하는 이 `enum` 키워드에 사용하는 `enum`을 생성하는 방법은 식별자들을 중괄호 쌍 안에 넣는 것이다. 열거형 타입은 열거 목록을 제공한다. 이 목록의 라벨들은 0부터 시작하는 숫자로 변환되며, 여기에는 코드 내에서 작업 가능한 (인간이 읽을 수 있는) 라벨로 표현 되어있다.
+
+```js
+const person = {
+  name: "Maximilian",
+  age: 30,
+  hobbies: ["Sports", "Cooking"],
+  role:,
+};
+```
+
+- 위의 코드와 같은 객체 내부의 요소인 `role`에 'admin', 'read_only', 'author'를 추가하고자 한다. 각각의 `id`는 'admin'에서는 0으로 설정하고, 읽기 전용 'read_only'은 1, 그리고 'author'은 2로 설정한다.
+
+```js
+const person = {
+  name: "Maximilian",
+  age: 30,
+  hobbies: ["Sports", "Cooking"],
+  role: 2, // author
+};
+```
+
+- 그리고 위의 사례(숫자 2는 'author'의 `id`이다.)처럼 `id` 숫자로 정확하게 설정할 수 있을 것이다. 하지만 여기서 한 가지 단점이 있는데 바로 역할(`role`)이 없을 수도 있는 숫자를 추가할 수 있다는 가능성이다. 코드를 작성하면서 나중에서야 `role`을 추출하고 `if` 검사를 수행하면 에러가 발생할 수 있게 된다. 또한 개발자로서 이 사용자의 `role`이 무엇일지 바로 이해하기 어려울 가능성도 있다. 2가 'author' 인지 'admin' 인지를 언제나 외우고 있지는 않기 때문이다. 그렇기 때문에 차라리 인간이 읽을 수 있는 식별자로 구분하는 것이 훨씬 나을지도 모른다. 어쩌면 문자열 식별자를 사용해볼 수도 있을 것이다. 아래의 경우라면 어떨까?
+
+```js
+const person = {
+  name: "Maximilian",
+  age: 30,
+  hobbies: ["Sports", "Cooking"],
+  role: "READ ONLY USER",
+};
+
+...
+
+if (person.role === "READ-ONLY-USER") {
+  console.log('is read only');
+}
+```
+
+- 위의 코드의 문제는 "READ ONLY USER"처럼 그저 단어로만 이루어져 있는지, "READ-ONLY-USER" 처럼 밑줄이 쳐져있는지 등을 정확히 기억해서 확인을 해야 한다는 것에 있다. 이것을 출력했을 때 "READ ONLY USER"와 "READ-ONLY-USER"는 다르기 때문에 제대로 작동되지 않을 것이다. 문자열 식별자는 이러한 단점을 내포하고 있다. 이런 경우, 보통은 전역 상수를 정의해서 사용할 때도 있다. 예를 들어,
+
+```js
+const ADMIN = 0;
+const READ_ONLY = 1;
+const AUTHOR = 2;
+
+const person = {
+  name: "Maximilian",
+  age: 30,
+  hobbies: ["Sports", "Cooking"],
+  role: ADMIN,
+};
+```
+
+- 이런 식으로 전역 상수를 정의해서 사용할 수 있도록 할 수도 있을 것이다. 물론 숫자를 사용해서 코드의 양과 메모리 점유를 낮출 수 있으니, 각각의 값에 숫자를 할당하고 `role`에 필요한 상수를 가져다 사용하는 방법은 어쩌면 우리에겐 꽤나 익숙한 방법일 것이다.
+
+```js
+const ADMIN = 0;
+const READ_ONLY = 1;
+const AUTHOR = 2;
+
+const person = {
+  name: "Maximilian",
+  age: 30,
+  hobbies: ["Sports", "Cooking"],
+  role: ADMIN,
+};
+
+if (person.role === ADMIN) {
+  console.log("is admin");
+}
+```
+
+- 하지만 이런 패턴에는 단점이 있다. 모든 상수를 정의하고 관리해야 한다는 것이다. 그리고 `enum`은 앞서 말한 패턴의 문제를 해결할 수 있는 타입이다.
+
+```js
+enum Role
+```
+
+- 먼저, `enum` 키워드로 `enum`을 생성하고, 키워드는 대문자로 시작하는 `Role`로 지정한다. `enum` 역시 사용자 지정 타입이기 때문에 이러한 방식을 따르는 것이다. 그리고 중괄호 쌍을 입력한 뒤,
+
+```js
+enum Role {
+  ADMIN,
+  READ_ONLY,
+  AUTHOR,
+}
+```
+
+- ADMIN, READ_ONLY, AUTHOR, 같은 값을 지정한다. 순서대로 각각 0, 1, 2 라는 숫자가 할당될 것이다.
+
+```js
+enum Role {
+  ADMIN,
+  READ_ONLY,
+  AUTHOR,
+}
+
+const person = {
+  name: "Maximilian",
+  age: 30,
+  hobbies: ["Sports", "Cooking"],
+  role: Role.ADMIN,
+};
+```
+
+- 그리고 아래 `role` 에서 `Role.ADMIN`으로 접근하여 값을 지정한다.
+
+```js
+enum Role {
+  ADMIN,
+  READ_ONLY,
+  AUTHOR,
+}
+
+const person = {
+  name: "Maximilian",
+  age: 30,
+  hobbies: ["Sports", "Cooking"],
+  role: Role.ADMIN,
+};
+
+...
+
+if (person.role === Role.AUTHOR) {
+  console.log("is author");
+}
+```
+
+- `if` 문에서 `role`이 `AUTHOR` 인지 확인하고 참이면 콘솔에 문자열을 출력하도록 했다. 지금까지 이 모든 작업을 라벨을 숫자로 할당하게 해주는 `enum`으로 수행해보았다. 해당 코드를 컴파일한 자바스크립트를 살펴보면,
+
+```js
+var Role;
+(function (Role) {
+  Role[(Role["ADMIN"] = 0)] = "ADMIN";
+  Role[(Role["READ_ONLY"] = 1)] = "READ_ONLY";
+  Role[(Role["AUTHOR"] = 2)] = "AUTHOR";
+})(Role || (Role = {}));
+var person = {
+  name: "Maximilian",
+  age: 30,
+  hobbies: ["Sports", "Cooking"],
+  role: Role.ADMIN,
+};
+
+...
+
+if (person.role === Role.AUTHOR) {
+  console.log("is author");
+}
+```
+
+- 컴파일된 코드가 재현되고 있음을 알 수 있다. 숫자 값을 저장할 수 있는 해당 코드 블록에는 ADMIN, READ_ONLY, AUTHOR 속성 등이 포함되므로 다소 복잡하지만 타입스크립트에서는 아주 간단하게 수행이 가능하다.
+
+```ts
+enum Role {
+  ADMIN = 5,
+  READ_ONLY = 100,
+  AUTHOR = 200,
+}
+```
+
+- `enum`의 경우 기본 동작에만 국한되지 않는다. 특정 이유로 인해서 시작 숫자를 0으로 시작하지 못하는 경우, 식별자에 등호를 추가하여 다른 숫자를 입력할 수도 있다. 시작 값이 0이 아니라 5라면 이 시작 값 식별자 다음의 다른 식별자 값은 시작 값으로부터 증가시켜서 할당해줘야 한다. 이를테면 이전의 기본 동작이 0, 1, 2 였다면 5로 시작 값을 할당한 지금은 5, 6, 7이 되는 것이다. 물론 `enum`에는 숫자 뿐만 아니라 텍스트를 할당할 수도 있고, 혼합도 가능하다.
+
+```ts
+enum Role {
+  ADMIN = "ADMIN",
+  READ_ONLY = 1,
+  AUTHOR = "200",
+}
+```
+
+- 어떤 것이든 할당이 가능하고, 숫자가 증가하기 시작하는 기본 값(`ADMIN`)이 0이지만 동작을 다른 식으로 구성하기 위해선 문자열에 이어서 숫자를 입력할 수도 있고 다른 문자열을 입력해도 된다. 이렇게 `enum`으로 정의한 `Role`은 `role` 타입을 참조하거나, 사용자 정의 타입을 참조하거나, 생성한 사용자 정의 사용 가능하다는 장점이 있고 이것은 `enum`의 강점이라고 할 수 있다. 인간이 읽을 수 있고 백그라운드에 매핑된 값이 있는 식별자가 필요할 때 `enum`의 강점을 우리는 활용할 수 있다.
 
 </br>
