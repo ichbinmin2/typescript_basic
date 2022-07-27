@@ -13,6 +13,7 @@
 - [any 타입](#any-타입)
 - [union 타입](#union-타입)
 - [literal 타입](#literal-타입)
+- [알리어스 타입 / 사용자 정의 타입](#알리어스-타입과-사용자-정의-타입)
 
 ### Using Types
 
@@ -421,6 +422,60 @@ console.log(combinedNames); // MaxAnna
 
 </br>
 
-## literal 타입
+## 알리어스 타입과 사용자 정의 타입
+
+### aliases 타입 적용 전
+
+```js
+function combine(
+  input1: number | string,
+  input2: number | string,
+  resultConversion: "as-number" | "as-text" // 특정 문자열을 union 타입으로 지정
+) {
+  let result;
+  if (
+    (typeof input1 === "number" && typeof input2 === "number") ||
+    resultConversion === "as-number"
+  ) {
+    result = +input1 + +input2; // 에러를 방지하기 위해서 미리 숫자로 변환하여 더해줌.
+  } else {
+    result = input1.toString() + input2.toString();
+  }
+  return result;
+}
+```
+
+### aliases 타입 적용 후
+
+```js
+// ⚡️
+type Combinable = number | string;
+type ConversionDescriptor = "as-number" | "as-text";
+// ⚡️
+
+function combine(
+  input1: Combinable,
+  input2: Combinable,
+  resultConversion: ConversionDescriptor
+) {
+  let result;
+  if (
+    (typeof input1 === "number" && typeof input2 === "number") ||
+    resultConversion === "as-number"
+  ) {
+    result = +input1 + +input2;
+  } else {
+    result = input1.toString() + input2.toString();
+  }
+  return result;
+}
+```
+
+- aliases 타입은 내가 정하고 싶은 별칭으로 저장하고자 하는 모든 타입의 설정에 사용할 수 있다.
+
+```js
+type Combinable = number | string;
+type ConversionDescriptor = "as-number" | "as-text";
+```
 
 </br>
