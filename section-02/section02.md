@@ -13,7 +13,8 @@
 - [any 타입](#any-타입)
 - [union 타입](#union-타입)
 - [literal 타입](#literal-타입)
-- [알리어스 타입 / 사용자 정의 타입](#알리어스-타입과-사용자-정의-타입)
+- [aliases 타입 / 사용자 정의 타입](#aliases-타입과-사용자-정의-타입)
+- [aliases 타입 및 객체 타입](#aliases-타입-및-객체-타입)
 
 ### Using Types
 
@@ -422,7 +423,7 @@ console.log(combinedNames); // MaxAnna
 
 </br>
 
-## 알리어스 타입과 사용자 정의 타입
+## aliases 타입과 사용자 정의 타입
 
 ### aliases 타입 적용 전
 
@@ -477,5 +478,44 @@ function combine(
 type Combinable = number | string;
 type ConversionDescriptor = "as-number" | "as-text";
 ```
+
+</br>
+
+## aliases 타입 및 객체 타입
+
+- 타입 별칭을 사용하여 타입을 직접 “생성”할 수 있다. 유니온 타입을 저장하는 것만 가능한 것이 아니라, 복잡할 수 있는 객체 타입에도 별칭을 붙일 수 있다.
+
+```js
+type User = { name: string, age: number };
+const u1: User = { name: "Max", age: 30 }; // this works!
+```
+
+- 타입 별칭을 사용하면 불필요한 반복을 피하고 타입을 중심에서 관리 할 수 있게 된다. 예를 들어,
+
+```js
+function greet(user: { name: string, age: number }) {
+  console.log("Hi, I am " + user.name);
+}
+
+function isOlder(user: { name: string, age: number }, checkAge: number) {
+  return checkAge > user.age;
+}
+```
+
+- 라는 타입 지정을 aliases 타입으로 관리하면
+
+```js
+type User = { name: string, age: number };
+
+function greet(user: User) {
+  console.log("Hi, I am " + user.name);
+}
+
+function isOlder(user: User, checkAge: number) {
+  return checkAge > user.age;
+}
+```
+
+- 이렇게 단순화 할 수 있게 된다.
 
 </br>
