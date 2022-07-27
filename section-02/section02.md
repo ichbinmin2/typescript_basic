@@ -16,6 +16,7 @@
 - [aliases 타입 / 사용자 정의 타입](#aliases-타입과-사용자-정의-타입)
 - [aliases 타입 및 객체 타입](#aliases-타입-및-객체-타입)
 - [함수 반환 타입 및 void](#함수-반환-타입-및-void)
+- [타입의 기능을 하는 함수](#타입의-기능을-하는-함수)
 
 ### Using Types
 
@@ -525,7 +526,7 @@ function isOlder(user: User, checkAge: number) {
 
 - `void`는 함수가 그 어떤 것도 return 하지 않을 때 반환 타입으로 지정된다.
 
-```js
+```ts
 function add(n1: number, n2: number) {
   // return의 타입은 명시적으로 작성되지 않았기 때문에 number 타입으로 추론되어 지정된다.
   return n1 + n2;
@@ -533,10 +534,113 @@ function add(n1: number, n2: number) {
 
 function printResult(num: number): void {
   // printResult 함수는 콘솔에 출력할 뿐이지 그 어떤 것도 return 하고 있지 않기 때문에 void 타입으로 추론되어 지정된다.
-  console.log("Result" + num); // 15
+  console.log("Result" + num);
 }
 
-printResult(add(5, 12));
+printResult(add(5, 12)); // 17
+```
+
+</br>
+
+## 타입의 기능을 하는 함수
+
+```ts
+function add(n1: number, n2: number) {
+  return n1 + n2;
+}
+
+function printResult(num: number): void {
+  console.log("Result" + num);
+}
+
+printResult(add(5, 12)); // 17
+
+let combineValues;
+conbineValues = add;
+
+console.log(combineValues(8, 8)); // 16
+```
+
+- 하지만 typescript 입장에서 변수 `combineValues`는 `any` 타입이 된다.
+
+```ts
+function add(n1: number, n2: number) {
+  return n1 + n2;
+}
+
+function printResult(num: number): void {
+  console.log("Result" + num);
+}
+
+printResult(add(5, 12)); // 17
+
+let combineValues;
+
+conbineValues = add;
+conbineValues = 22; // 컴파일 에러가 나지 않음; 런타임 에러가 발생!
+
+console.log(combineValues(8, 8)); // 16
+```
+
+- 그래서 `combineValues`에 숫자를 할당해도 타입스크립트는 인지하지 못하고, 컴파일 에러를 내지 않는다. 그러나 런타임에서는 에러가 발생한다! 숫자인 `combineValues`를 함수로 실행하려 한 명확한 이유가 있기 때문이다. 이런 에러를 방지하려면 `combineValues`가 함수를 지니게 된다고 '명시' 하면 된다.
+
+```ts
+function add(n1: number, n2: number) {
+  return n1 + n2;
+}
+
+function printResult(num: number): void {
+  console.log("Result" + num);
+}
+
+printResult(add(5, 12)); // 17
+
+let combineValues: Function;
+
+conbineValues = add;
+// conbineValues = 22; // 컴파일 에러가 발생!
+conbineValues = printResult; // 문제가 있음에도 컴파일 에러가 발생되지 않음!
+
+console.log(combineValues(8, 8)); // 16
+```
+
+- 하지만, `combineValues`에 해당되지 않는 `printResult` 함수를 할당해도 컴파일 에러가 발생하지 않는다는 단점이 있다. 이 때문에 함수만 타입으로 지정하는 것이 아니라, 세부적으로 지정해줄 수 있다면 더 좋을 것이다.
+
+```ts
+let combineValues: () => ;
+```
+
+- `Function` 타입을 지우고 함수의 매개변수와 반환 값에 관련된 함수를 설명하는 함수로 사용할 수 있도록 `arrow function`의 형태로 표기한다.
+
+```ts
+let combineValues: () => number;
+```
+
+- 그리고 호살표의 오른쪽에 원하는 함수의 반환 타입 `number`를 지정하여 저장할 수 있도록 해준다.
+
+```ts
+let combineValues: (a: number, b: number) => number;
+```
+
+- 그리고 매개변수를 취하지 않는 `any` 타입을 거부하기 위해서 해당 타입을 사용하는 함수처럼 매개변수 각각의 타입을 지정하고 `number`를 반환하도록 작성한다.
+
+```ts
+function add(n1: number, n2: number) {
+  return n1 + n2;
+}
+
+function printResult(num: number): void {
+  console.log("Result" + num);
+}
+
+printResult(add(5, 12)); // 17
+
+let combineValues: (a: number, b: number) => number;
+
+conbineValues = add;
+// conbineValues = printResult; // 컴파일 에러가 발생!
+
+console.log(combineValues(8, 8)); // 16
 ```
 
 </br>
