@@ -15,6 +15,7 @@
 - [literal 타입](#literal-타입)
 - [aliases 타입 / 사용자 정의 타입](#aliases-타입과-사용자-정의-타입)
 - [aliases 타입 및 객체 타입](#aliases-타입-및-객체-타입)
+- [함수 반환 타입 및 void](#함수-반환-타입-및-void)
 
 ### Using Types
 
@@ -517,5 +518,25 @@ function isOlder(user: User, checkAge: number) {
 ```
 
 - 이렇게 단순화 할 수 있게 된다.
+
+</br>
+
+## 함수 반환 타입 및 void
+
+- `void`는 함수가 그 어떤 것도 return 하지 않을 때 반환 타입으로 지정된다.
+
+```js
+function add(n1: number, n2: number) {
+  // return의 타입은 명시적으로 작성되지 않았기 때문에 number 타입으로 추론되어 지정된다.
+  return n1 + n2;
+}
+
+function printResult(num: number): void {
+  // printResult 함수는 콘솔에 출력할 뿐이지 그 어떤 것도 return 하고 있지 않기 때문에 void 타입으로 추론되어 지정된다.
+  console.log("Result" + num); // 15
+}
+
+printResult(add(5, 12));
+```
 
 </br>
