@@ -6,3 +6,9 @@
 
 - [Getting Started](https://github.com/ichbinmin2/typescript_basic/blob/main/section-01/section01.md)
 - [Typescript Basics & Basic Types](https://github.com/ichbinmin2/typescript_basic/blob/main/section-02/section02.md)
+
+## The TypeScript Compiler and its Configuration
+
+- [The TypeScript Compiler (and its Configuration)](https://github.com/ichbinmin2/typescript_basic/blob/main/section-03/section03.md)
+
+</br>
