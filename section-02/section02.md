@@ -791,3 +791,78 @@ if (typeof userInput === "string") {
 - `if` 문에서 `userInput`이 문자열 타입이라고 설정했기 대문에 `userInput`은 문자열 타입이 되고, 그렇기 때문에 `userName`이 문제 없이 할당되는 것이다. 따라서 추가적인 타입 검사가 필요하다. `unknown` 타입은 `unknown`을 사용해서 `unknown` 값을 고정된 값에 할당할 수 있으므로, `unknown`이 모든 타입 확인을 무시하는`any`타입 보다 훨씬 낫다. 어떤 타입을 저장할지 아직 알 수 없지만, 추가적인 검사를 추가하여 어떤 작업을 수행할지 명시함으로써 문자열로 작업을 하려는 경우 문자열을 저장할 수 있다. `unknown` 타입은 매번 사용할만한 타입이라 말하긴 곤란하지만, 앞서 말한 이런 경우에 따라 `any` 타입을 사용하는 대신 선택하는 게 훨씬 더 나을 수도 있다.
 
 </br>
+
+## never 타입
+
+- `never` 타입은 함수가 반환할 수 있는 타입이다.
+
+```ts
+function generateError(message: string, code: number) {
+  throw ;
+}
+```
+
+- 먼저 `generateError` 함수 내부에서 에러가 넘어가도록(throw) 할 것이다. `throw`는 에러 객체를 생성하여 넘기는 유틸리티 함수다. 자바스크립트에서와 마찬가지로 객체를 넘길 수 있다.
+
+```ts
+function generateError(message: string, code: number) {
+  throw {};
+}
+```
+
+- 즉, 객체나 값을 에러로서 넘길 수가 있는데, 여기에 `message` 매개변수 인수 값을 저장하는 `message` 속성을 가져와야 한다.
+
+```ts
+function generateError(message: string, code: number) {
+  throw { message: message, errorCode: code };
+}
+```
+
+- `errorCode` 속성 역시 입력하고, 매개변수 `code` 를 저장할 수 있도록 한다.
+
+```ts
+function generateError(message: string, code: number) {
+  throw { message: message, errorCode: code };
+}
+
+generateError("An error occurred!", 500);
+```
+
+- 이제 함수를 호출하여, '에러가 발생했다' 라는 메세지를 호출하고, `errorCode` 500을 매개변수로 넘겨준다.
+
+![image](https://user-images.githubusercontent.com/53133662/181418329-07695842-2ea1-4a5e-9947-99156071b925.png)
+
+- 개발자 도구 콘솔을 확인해보면, 우리가 넘겨준 에러가 출력되는 걸 알 수 있다. 규모가 큰 어플리케이션에서는 이와 같은 유틸리티 함수를 사용하지는 않는 것이 일반적이지는 않을 것이다. 그런 규모가 큰 어플리케이션에 직접 여러개의 에러를 발생시키는 경우는 없기 때문이다. 아무튼, `generateError` 함수의 흥미로운 점은 `void` 처럼 `void`를 반환하는 게 아니라는 것이다. 그리고 실제로도 에러를 띄우고 있다. 물론 `void` 가 반환되도록 명시할 수도 있다. 아무 것도 반환하지 않기 때문이다.
+
+```ts
+function generateError(message: string, code: number): void {
+  throw { message: message, errorCode: code };
+}
+```
+
+- 하지만 `generateError` 함수는 단순히 `void`처럼 아무 것도 반환하지 않는 것은 아니다. 더 정확하게 이야기하자면 해당 함수는 `never`를 반환하며 반환 값을 생성하지 않는다. 반환 값을 복원하려면 `console.log(result)`를 입력한 다음에
+
+```ts
+function generateError(message: string, code: number) {
+  throw { message: message, errorCode: code };
+}
+
+const result = generateError("An error occurred!", 500);
+console.log(result);
+```
+
+- 코드를 컴파일하고 실행하면 `log`가 정의되지 않는다. 넘어간(throw) 에러가 스크립트와 충돌하기도 하므로 스크립트가 취소되기 때문이다. 이 블록을 감싸고 `try catch`를 입력하여 스크립트를 계속 진행할 수도 있지만 `generateError` 함수는 기본적으로 절대로(`never`) 값을 생성하지 않는다. 또한 `try catch`를 사용하면 해당 함수가 항상 스크립트나 스크립트의 일부와 충돌하기 때문에 아무것도 반환하지 않는다. 따라서 해당 함수의 반환 타입은 `void` 뿐만 아니라, `never`도 가능하다.
+
+```ts
+function generateError(message: string, code: number): never {
+  throw { message: message, errorCode: code };
+}
+
+generateError("An error occurred!", 500);
+```
+
+## 정리
+
+- 흥미로운 점은 해당 함수에 `never`를 명시적으로 타입지정을 하지 않고 해당 부근에 마우스 커서를 올리면 `void`가 자동으로 추론된다는 것인데 이는 `never`가 새로운 유형이 아니기 때문이다. 그러니까 오래 전부터 `never`는 사용되었지만 타입스크립트의 초기 버전부터 사용되진 않았기 때문에 아직 반영이 되지 않는 것이란 뜻이다. 그러나 `never`가 아무것도 반환하지 않는다는 것을 확실히 하기 위해 `never`를 명시적으로 설정할 수 있다. 이런 작업을 수행함으로써 코드 품질의 관점에서 의도를 더 분명히 할 수 있으며, `void`의 대체 타입으로 사용하기에 적절하다. 그러니까 `never` 타입을 반환하는 함수는 아무것도 반환하지 않으며, 기본적으로 스크립트나 스크립트의 일부를 충돌시키거나 망가트리기 위한 것임을 코드를 읽는 개발자 역시 빠르게 이해시킬 수 있게 되는 것이다.
+
+</br>
