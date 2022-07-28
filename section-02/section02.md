@@ -17,6 +17,7 @@
 - [aliases 타입 및 객체 타입](#aliases-타입-및-객체-타입)
 - [함수 반환 타입 및 void](#함수-반환-타입-및-void)
 - [타입의 기능을 하는 함수](#타입의-기능을-하는-함수)
+- [함수 타입 및 콜백](#함수-타입-및-콜백)
 
 ### Using Types
 
@@ -641,6 +642,79 @@ conbineValues = add;
 // conbineValues = printResult; // 컴파일 에러가 발생!
 
 console.log(combineValues(8, 8)); // 16
+```
+
+</br>
+
+## 함수 타입 및 콜백
+
+```ts
+function addAndHandle(n1: number, n2: number, cb: (num: number) => void) {
+  const result = n1 + n2;
+  cb(result);
+}
+
+addAndHandle(10, 20, (result) => {
+  console.log(result);
+});
+```
+
+- 함수 내에 callback 함수를 전달하면 타입스크립트는 해당 결과가 `number`가 될 것이라고 추론할 수 있기 때문에 `addAndHandle` 함수가 받는 매개변수인 `result`로 어떤 작업이든 할 수 있다.
+
+```ts
+addAndHandle(10, 20, (result) => {
+  console.log(result);
+});
+```
+
+- `result` 매개변수에 `number` 타입이라고 명시하지 않고도 `number`로 작업을 수행할 수 있는 이유는 `number`라는 인수 하나를 callback에서 가져온다고 우리가 명시하였기 때문에
+
+```ts
+function addAndHandle(n1: number, n2: number, cb: (num: number) => void) {
+  const result = n1 + n2;
+  cb(result);
+}
+```
+
+- `cb: (num: number) => void` 이를 보고 타입스크립트는 `result`(`num`)가 `number`가 될 것임을 추론했기 때문이다. 만약 `addAndHandle` 함수에서 무언가를 return 하게 된다면 어떨까?
+
+```ts
+addAndHandle(10, 20, (result) => {
+  console.log(result);
+  return result;
+});
+```
+
+- `return result`를 입력하면 callback이 무언가를 반환하게 된다. 아무 것도 반환하면 안된다고 명시(`void`)했음에도 말이다. 그러나 이는 타입스크립트의 실수나 버그가 아니다. 기본적으로 callback 타입에 `void`를 지정하면여기서 반환할 수 있는 모든 값을 무시하게 되기 때문이다.
+
+```ts
+function addAndHandle(n1: number, n2: number, cb: (num: number) => void) {
+  const result = n1 + n2;
+  cb(result);
+}
+```
+
+- 그래서 `addAndHandle` 함수에서 매개변수로 받는 콜백함수가 `return` 타입으로 `void`를 설정함으로써 아무 작업도 수행하지 않을 것이라고 입력한 것이다.
+
+```ts
+addAndHandle(10, 20, (result) => {
+  console.log(result);
+  return result;
+});
+```
+
+- 따라서, `addAndHandle`에서 아무 문제 없이 무언가를 반환할 수 있는데 그 이유는 앞서 설명한 것처럼 `addAndHandle` 가 받는 매개변수인 callback 함수가 반환되는 값의 타입으로 `void`를 명확하게 지정하고 있기 때문이다.
+
+```ts
+cb: (num: number) => void
+```
+
+- 그렇기에 `addAndHandle` 함수는 값을 반환하는 어떤 작업도 수행하지 않는다.
+
+```ts
+addAndHandle(10, 20, (result) => {
+  console.log(result);
+});
 ```
 
 </br>
