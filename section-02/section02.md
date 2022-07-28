@@ -18,6 +18,8 @@
 - [함수 반환 타입 및 void](#함수-반환-타입-및-void)
 - [타입의 기능을 하는 함수](#타입의-기능을-하는-함수)
 - [함수 타입 및 콜백](#함수-타입-및-콜백)
+- [unknown 타입](#unknown-타입)
+- [never 타입](#never-타입)
 
 ### Using Types
 
@@ -716,5 +718,76 @@ addAndHandle(10, 20, (result) => {
   console.log(result);
 });
 ```
+
+</br>
+
+## unknown 타입
+
+- `unknown` 타입은 어떤 타입이든 저장이 가능하지만 `any` 타입과 다르게 작동한다.
+
+## unknown 타입일 때
+
+```ts
+let userInput: unknown; // 어떤 타입이든 저장이 가능하다.
+let userName: string;
+
+userInput = 5;
+userInput = "Max";
+
+userName = userInput; // 컴파일 error 발생!!!
+```
+
+## any 타입일 때
+
+```ts
+let userInput: any; // 어떤 타입이든 저장이 가능하다.
+let userName: string;
+
+userInput = 5;
+userInput = "Max";
+
+userName = userInput; // 정상 작동 된다
+```
+
+- `any`는 타입스크립트에서 아주 유연한 타입이고, 덕분에 타입 확인을 수행하지 않도록 하기 때문에 컴파일 에러가 발생하지 않는다. 반면 `unknown` 타입은 `any` 보다 조금 더 제한적이라는 특징을 갖는다.
+
+```ts
+let userInput: unknown; // 어떤 타입이든 저장이 가능하다.
+let userName: string;
+
+userInput = 5;
+userInput = "Max";
+
+userName = userInput; // 컴파일 error 발생!!!
+```
+
+- `unknown`을 사용하는 경우, `userInput`에 현재 저장된 타입을 확인해야 문자열을 원하는 변수 `userName`에 할당할 수 있다.
+
+```ts
+let userInput: unknown; // 어떤 타입이든 저장이 가능하다.
+let userName: string;
+
+userInput = 5;
+userInput = "Max";
+
+if (typeof userInput === "string") {
+}
+```
+
+- 따라서 문자열이 필요하면 `if` 문을 만들어서 `typeof userInput`을 입력하고 문자열과 같은지 추가적으로 확인을 해준다. 그러면 타입스크립트는 이 확인 작업을 감지하고, 이 라인에 `userName`을 저장했다는 걸 이해하게 된다.
+
+```ts
+let userInput: unknown; // 어떤 타입이든 저장이 가능하다.
+let userName: string;
+
+userInput = 5;
+userInput = "Max";
+
+if (typeof userInput === "string") {
+  userName = userInput;
+}
+```
+
+- `if` 문에서 `userInput`이 문자열 타입이라고 설정했기 대문에 `userInput`은 문자열 타입이 되고, 그렇기 때문에 `userName`이 문제 없이 할당되는 것이다. 따라서 추가적인 타입 검사가 필요하다. `unknown` 타입은 `unknown`을 사용해서 `unknown` 값을 고정된 값에 할당할 수 있으므로, `unknown`이 모든 타입 확인을 무시하는`any`타입 보다 훨씬 낫다. 어떤 타입을 저장할지 아직 알 수 없지만, 추가적인 검사를 추가하여 어떤 작업을 수행할지 명시함으로써 문자열로 작업을 하려는 경우 문자열을 저장할 수 있다. `unknown` 타입은 매번 사용할만한 타입이라 말하긴 곤란하지만, 앞서 말한 이런 경우에 따라 `any` 타입을 사용하는 대신 선택하는 게 훨씬 더 나을 수도 있다.
 
 </br>
