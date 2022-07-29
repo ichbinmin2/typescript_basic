@@ -6,6 +6,7 @@
 - [Compiling the Entire Project / Multiple Files](#전체-프로젝트-컴파일과-다수의-파일)
 - [Including & Excluding Files](#파일-포함-및-제외하기)
 - [Setting a Compilation Target](#컴파일-대상-설정하기)
+- [Understanding TypeScript Core Libs](#TypeScript-핵심-라이브러리-이해하기)
 
 ### Watch Mode 이용하기
 
@@ -190,3 +191,145 @@ console.log(userName);
 - 당연히, `target` 옵션에서 기본 값으로 선택하는 자바스크립트 버전이 최신일 수록 생성되는 코드는 더 간결해지며, 이는 타입스크립트가 점차 더 적은 양의 코드를 컴파일하며 존재하지 않는 기능에 대해 작업을 해야하는 경우가 줄어들기 때문일 것이다. 따라서 컴파일된 코드는 `target` 옵션 값이 최신 버전일 수록 더 간결하고 짧아진다.
 
   </br>
+
+## TypeScript 핵심 라이브러리 이해하기
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    // "lib": [],
+    ...
+  }
+}
+```
+
+- `lib` 은 `dom`으로 작업을 수행하는 항목들, 즉 기본 객체/기능/타입스크립트 노드를 지정하게 해주는 옵션이다.
+
+```html
+<button>Click me</button>
+```
+
+- 먼저 `index.html`에 `<button>` 태그를 만들고 `app.ts`로 이동하여 아래와 같이 작성해준다.
+
+```ts
+const button = document.querySelector("button");
+
+button.addEventListener();
+```
+
+- `button`에 `addEventListenr()`를 추가하면 에러가 발생하는데 `button`을 찾아낸 게 맞는지 여부를 타입스크립트가 확신하지 못하기 때문이다.
+
+```ts
+const button = document.querySelector("button")!;
+
+button.addEventListener("click", () => {
+  console.log("Clicked");
+});
+```
+
+- 지금은 간단하게 라인의 끝에 느낌표를 붙여 에러를 해결해준다.
+  > ✍🏻 느낌표는 기본적으로 button이 존재하고 있으니 값이 반환될 것라고 타입스크립트에 알려주는 역할을 한다.
+- 그리고 `tsc` 명령어를 사용하면 컴파일이 수행된다. 타입스크립트는 왜 해당 `document`가 `unknown` 이라는 에러를 표시하지 않는 걸까? 이와 같은 `document`와 `const`, 변수 등이 존재한다는 것을 어떻게 타입스크립트는 아는 걸까? 설령 `document`를 사용할 수 있다 하더라도 `querySelector` 메소드가 있는 객체를 포함한다는 것, `button`이 `addEventListener`를 가지고 있다는 것은 또 어떻게 알고 있는 걸까? 타입스크립트는 어떻게 다 아는 걸까?
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    // "lib": [],
+    ...
+  }
+}
+```
+
+- 타입스크립트가 이 모든 것을 알고 작동시키는 이유는 바로 `lib` 옵션 때문이다..
+
+### compilerOptions의 lib 옵션
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    // "lib": [],
+    ...
+  }
+}
+```
+
+- 보다시피 지금은 주석처리되어 있지만, 이런 경우에 일부 기본 설정이 적용된다. `lib` 설정이 되어있지 않으면 기본 설정은 자바스크립트의 `target`에 따라 달라진다. `es6`로 설정한 경우 기본적으로 `es6`에서 전역적으로 사용 가능한 모든 기능이 포함된다. 즉 자바스크립트에서 전역적으로 사용가능한 `es6`의 기능들을 타입스크립트에서도 사용가능하게 해준다는 뜻이다. 이는 또한 모든 `DOM` API도 사용 가능하게 만들어준다. 간단히 말해, `lib` 옵션이 설정되어 있지 않은 경우, 일부 기본 옵션이 적용되는데 이러한 기본 옵션은 타입스크립트가 브라우저에 작동하는 데 필요한 사항들이므로 `DOM` API 등이 포함되는 것이다.
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    "lib": []
+    ...
+  }
+}
+```
+
+- 주석 처리된 `lib`의 주석을 해제하고 다시 컴파일하면 에러가 발생한다. 주석 처리를 해제하면 기본 설정이 더이상 적용되지 않기 때문이다. 대신 `lib`으로 기본 라이브러리를 포함시켜야 한다. 즉 `lib` 배열에 사용할 몇 가지 기본 타입 정의들 말이다. (다시 주석처리를 하면, 타입스크립트가 기본 설정을 적용하여 작동한다.)
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    "lib": [
+      "DOM"
+    ]
+    ...
+  }
+}
+```
+
+- 따라서 적합한 값을 `lib`에 설정해두도록 한다. `DOM`은 타입스크립트가 이해할 수 있으며, 모든 `DOM` API를 타입스크립트에서 사용할 수 있게 해준다.
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    "lib": [
+      "DOM",
+      "ES6",
+      "DOM.Iterable",
+      "ScriptHost"
+    ]
+    ...
+  }
+}
+```
+
+- 현재 `ES6` 세대의 자바스크립트로 작업을 하고 있으므로 전역적으로 사용 가능한 모든 `ES6` 옵션들을 타입스크립트가 이해할 수 있도록 `ES6`도 추가한다. `DOM.Iterable` 와 `ScriptHost` 도 추가하는 것이 좋다. 이 두가지를 추가하면 작업에 사용할 만한 자바스크립트의 핵심 기능을 모두 사용할 수 있게 된다. 그런데 이 네가지 옵션 값은 정확하게 `ES6`로 설정했을 때의 자동 기본 설정과 같다.
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    // "lib": [
+    //   "DOM",
+    //   "ES6",
+    //   "DOM.Iterable",
+    //   "ScriptHost"
+    // ]
+    ...
+  }
+}
+```
+
+- 즉, 주석처리를 해도 이는 그냥 `ES6`의 기본값이 자동으로 설정되는 기본 설정과 동일하다는 의미이다. 
+
+</br>
