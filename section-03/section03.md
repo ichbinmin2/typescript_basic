@@ -7,6 +7,7 @@
 - [Including & Excluding Files](#파일-포함-및-제외하기)
 - [Setting a Compilation Target](#컴파일-대상-설정하기)
 - [Understanding TypeScript Core Libs](#TypeScript-핵심-라이브러리-이해하기)
+- [More Configuration & Compilation Options](#추가-구성-및-컴파일-옵션)
 
 ### Watch Mode 이용하기
 
@@ -330,6 +331,109 @@ button.addEventListener("click", () => {
 }
 ```
 
-- 즉, 주석처리를 해도 이는 그냥 `ES6`의 기본값이 자동으로 설정되는 기본 설정과 동일하다는 의미이다. 
+- 즉, 주석처리를 해도 이는 그냥 `ES6`의 기본값이 자동으로 설정되는 기본 설정과 동일하다는 의미이다.
 
 </br>
+
+## 추가 구성 및 컴파일 옵션
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    "lib": [
+      "DOM",
+      "ES6",
+      "DOM.Iterable",
+      "ScriptHost"
+    ]
+    /* Specify library files to be included in the compilation. */,
+
+    // "allowJs": true, /* Allow javascript files to be compiled. */
+    // "checkJs": true,  /* Report errors in .js files. */
+    ...
+  }
+}
+```
+
+- `allowJs` 역시 흥미로운 옵션이다. `allowJs`는 컴파일시에 `checkJS` 옵션과 함께 자바스크립트 파일에 포함시킬 수 있다. `allowJs` 옵션은 타입스크립트가 자바스크립트 파일을 컴파일할 수 있도록 해준다. `allowJs`를 사용하면, 파일이 `.ts`로 끝나지 않더라도 타입스크립트는 컴파일할 수 있다. `checkJS` 옵션은 타입스크립트가 컴파일을 수행하지 않더라도, 구문을 검사하고 잠재적 에러를 '보고'해주고, 타입스크립트를 사용하지 않고 일부 기능의 장점을 취하고자 할 때 유용하다. 타입스크립트는 자바스크립트에서 효과적으로 사용할 수 있는 `any` 타입만 허용하는데 이 옵션들(`checkJS`, `allowJs`)를 활성화하면 그와 같이 설정된다.
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    "lib": [
+      "DOM",
+      "ES6",
+      "DOM.Iterable",
+      "ScriptHost"
+    ]
+    /* Specify library files to be included in the compilation. */,
+
+    // "allowJs": true, /* Allow javascript files to be compiled. */
+    // "checkJs": true,  /* Report errors in .js files. */
+    ...
+  }
+}
+```
+
+- 타입스크립트를 전혀 사용하지 않는 프로젝트나 타입스크립트 파일과 바닐라 자바스크립트 파일을 함께 사용하면서 바닐라 자바스크립트 파일도 함께 검사하고 싶은 경우에 사용 가능하다.
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    "lib": [
+      "DOM",
+      "ES6",
+      "DOM.Iterable",
+      "ScriptHost"
+    ]
+    /* Specify library files to be included in the compilation. */,
+
+    // "allowJs": true, /* Allow javascript files to be compiled. */
+    // "checkJs": true,  /* Report errors in .js files. */
+    // "jsx": "preserve", /* Specify JSX code generation: 'preserve', 'react-native', or 'react'. */
+    // "declaration": true, /* Generates corresponding '.d.ts' file. */
+    // "declarationMap": true, /* Generates a sourcemap for each corresponding '.d.ts' file. */
+    ...
+  }
+}
+```
+
+- 현재 프로젝트에서는 필요하지 않은 `declaration`와 `declarationMap`는 주석처리 해준다.`d.ts` 파일은 프로젝트를 라이브러리로 배포할 때 중요한 고급 개념이다. 프로젝트의 모든 타입을 설명하는 `manifest` 파일이 필요한데 그것이 바로 `.d.ts`이기 때문이다.
+
+</br>
+
+##
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    "lib": [
+      "DOM",
+      "ES6",
+      "DOM.Iterable",
+      "ScriptHost"
+    ]
+    /* Specify library files to be included in the compilation. */,
+
+    // "allowJs": true, /* Allow javascript files to be compiled. */
+    // "checkJs": true,  /* Report errors in .js files. */
+    // "jsx": "preserve", /* Specify JSX code generation: 'preserve', 'react-native', or 'react'. */
+    // "declaration": true, /* Generates corresponding '.d.ts' file. */
+    // "declarationMap": true, /* Generates a sourcemap for each corresponding '.d.ts' file. */
+    // "sourceMap": true, /* Generates corresponding '.map' file. */
+    ...
+  }
+}
+```
