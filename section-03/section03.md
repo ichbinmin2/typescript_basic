@@ -8,6 +8,7 @@
 - [Setting a Compilation Target](#컴파일-대상-설정하기)
 - [Understanding TypeScript Core Libs](#TypeScript-핵심-라이브러리-이해하기)
 - [More Configuration & Compilation Options](#추가-구성-및-컴파일-옵션)
+- [Working with Source Maps](#소스-맵-작업하기)
 
 ### Watch Mode 이용하기
 
@@ -411,7 +412,7 @@ button.addEventListener("click", () => {
 
 </br>
 
-##
+## 소스 맵 작업하기
 
 ```json
 {
@@ -437,3 +438,46 @@ button.addEventListener("click", () => {
   }
 }
 ```
+
+- `sourceMap`는 디버깅 작업과 개발에 유용한 옵션이다. 만약 이 옵션을 사용하지 않고 `tsc`를 사용해서 모든 파일을 컴파일하고 브라우저의 데브 서버를 열어서 개발자 도구의 `Sources` 탭으로 이동해보자.
+
+![스크린샷 2022-08-01 오전 7 34 23](https://user-images.githubusercontent.com/53133662/182047975-09e9060a-01ef-4fb4-b0ad-63b992c06eea.png)
+
+- 소스맵 탭을 확인해보면 포함된 내용이 결국은 자바스크립트 코드라는 걸 알수 있다. 현재는 간단한 코드이지만 만약 복잡한 방식의 코드가 있어서 타입스크립트 코드와 디컴파일된 자바스크립트 코드를 디버깅 해야한다면 어떻게 해야할까? 자바스크립트 파일이 아닌 타입스크립트 파일이 있다면 좋을 것이다.
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    "lib": [
+      "DOM",
+      "ES6",
+      "DOM.Iterable",
+      "ScriptHost"
+    ]
+    /* Specify library files to be included in the compilation. */,
+
+    // "allowJs": true, /* Allow javascript files to be compiled. */
+    // "checkJs": true,  /* Report errors in .js files. */
+    // "jsx": "preserve", /* Specify JSX code generation: 'preserve', 'react-native', or 'react'. */
+    // "declaration": true, /* Generates corresponding '.d.ts' file. */
+    // "declarationMap": true, /* Generates a sourcemap for each corresponding '.d.ts' file. */
+    "sourceMap": true, /* Generates corresponding '.map' file. */
+    ...
+  }
+}
+```
+
+- `sourceMap` 옵션의 주석을 풀고, 값을 참true로 설정한 뒤 `tsc` 명령어로 전체 파일을 컴파일 해주면,
+
+![image](https://user-images.githubusercontent.com/53133662/182049203-1d097dc6-2711-40be-ac45-6a969869d8af.png)
+
+- 폴더 내부에 `js.map` 파일들이 생성된다. 파일들을 살펴보면, 이해할 수 없는 내용들이 들어있지만 기본적으로 이 파일은 입력 파일에 자바슼릡트 파일을 연결하는 최신 브라우저와 개발자 도구 간의 다리 역할을 한다는 걸 기억하자. 개발자 도구를 열고 소스탭으로 이동해보면,
+
+![image](https://user-images.githubusercontent.com/53133662/182049175-30d6012c-b8a7-4a9b-a312-9d4a6ff5684d.png)
+
+- 소스 탭에서 자바스크립트 파일 뿐만 아니라, 타입스크립트 파일도 볼 수 있다는 걸 알 수 있다. 타입스크립트에 중단점을 둘 수도 있기 때문에 이런 기능들은 디버깅 프로세스를 한 단계 향상시켜줄 것이다. 자바스크립트 파일 대신 기본적으로 타입스크립트 파일에서 직접 작업을 수행할 수 있기 때문이다. 물론 지금처럼 아주 간단한 프로젝트로 작업을 할 때에는 굳이 이 옵션을 추가할 필요는 없을 것이다. 다만 이 `sourceMap` 옵션의 기능은 디버깅을 단순화해주기 때문에 프로젝트를 진행할 때 아주 유용하다는 것을 잊지 말자.
+
+</br>
