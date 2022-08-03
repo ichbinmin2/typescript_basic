@@ -9,6 +9,7 @@
 - [Understanding TypeScript Core Libs](#TypeScript-핵심-라이브러리-이해하기)
 - [More Configuration & Compilation Options](#추가-구성-및-컴파일-옵션)
 - [Working with Source Maps](#소스-맵-작업하기)
+- [rootDir and outDir](#rootDir-및-outDir)
 
 ### Watch Mode 이용하기
 
@@ -481,3 +482,44 @@ button.addEventListener("click", () => {
 - 소스 탭에서 자바스크립트 파일 뿐만 아니라, 타입스크립트 파일도 볼 수 있다는 걸 알 수 있다. 타입스크립트에 중단점을 둘 수도 있기 때문에 이런 기능들은 디버깅 프로세스를 한 단계 향상시켜줄 것이다. 자바스크립트 파일 대신 기본적으로 타입스크립트 파일에서 직접 작업을 수행할 수 있기 때문이다. 물론 지금처럼 아주 간단한 프로젝트로 작업을 할 때에는 굳이 이 옵션을 추가할 필요는 없을 것이다. 다만 이 `sourceMap` 옵션의 기능은 디버깅을 단순화해주기 때문에 프로젝트를 진행할 때 아주 유용하다는 것을 잊지 말자.
 
 </br>
+
+## rootDir 및 outDir
+
+- `dist` 폴더는 모든 출력값을 보관하는 작업을 수행한다. 모든 자바스크립트 파일과 `src` 폴더에 모든 타입스크립트 파일이 보관되므로 `dist`와 `src` 폴더를 셍성하고, 타입스크립트 파일을 전부 `src` 폴더로 옮긴다. 루트 위치에 있는 자바스크립트 폴더를 삭제하고 `tsc` 명령어를 사용해서 `.ts` 파일을 다시 컴파일한다. 타입스크립트 디컴파일러는 하위 폴더를 들여다보지만, 출력값은 입력파일 옆에 있기 때문에 이 입력 파일을 `outDir`로 제어할 수 있다.
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    "lib": [
+      "DOM",
+      "ES6",
+      "DOM.Iterable",
+      "ScriptHost"
+    ]
+    /* Specify library files to be included in the compilation. */,
+
+    ...
+    // "outFile": "./", /* Concatenate and emit output to single file. */
+    "outDir": "./dist", /* Redirect output structure to the directory. */
+    // "rootDir": "./", /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
+    ...
+  }
+}
+```
+
+- 예를 들어, `outDir`를 설정하면, 생성된 파일이 저장되는 위치를 타입스크립트 컴파일러에 알릴 수 있다. 그리고 이를 `dist`로 설정할 수 있다. 이 작업을 수행한 후에 `tsc` 명령어를 실행하면 자바스크립트 파일이 `src` 폴더가 아닌, `dist` 폴더에 생성된다.
+
+```html
+<script src="app.js" defer></script>
+<script src="analytics.js" defer></script>
+```
+
+- 이제 `index.html`로 이동하여 `app.js`를 `dist/app.js`로, `analytics.js`를 `dist/analytics.js`로 조정한다. 이렇게 되면, `index.html` 파일을 `dist` 폴더로 이동시켜서 `dev` 서버가 제대로 작동하지 않을 것이다.
+
+
+
+
+  </br>
