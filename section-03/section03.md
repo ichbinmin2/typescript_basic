@@ -517,9 +517,129 @@ button.addEventListener("click", () => {
 <script src="analytics.js" defer></script>
 ```
 
-- 이제 `index.html`로 이동하여 `app.js`를 `dist/app.js`로, `analytics.js`를 `dist/analytics.js`로 조정한다. 이렇게 되면, `index.html` 파일을 `dist` 폴더로 이동시켜서 `dev` 서버가 제대로 작동하지 않을 것이다.
+- 이제 `index.html`로 이동하여 `app.js`를 `dist/app.js`로, `analytics.js`를 `dist/analytics.js`로 조정한다. `index.html` 파일을 `dist` 폴더로 이동시킨다. 이제 `dev` 서버가 제대로 작동하지 않을 것이다.
 
+```html
+<script src="dist/app.js" defer></script>
+<script src="dist/analytics.js" defer></script>
+```
 
+- 이제 가져온 항목들을 조정해보자. 작업 중인 애플리케이션의 프로젝트 구조가 더 깔끔해졌다.
 
+![image](https://user-images.githubusercontent.com/53133662/182844536-b348da44-fc03-4e48-b666-a19564718142.png)
+
+- 만약 `analytics.ts` 파일을 동일한 이름의 폴더로 만들어서 그 안에 넣어두고 `tsc` 명령어를 실행한다고 해도, 이제 컴파일된 `js` 파일은 알아서 `dist` 폴더 안에서 생성될 것이다.
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    "lib": [
+      "DOM",
+      "ES6",
+      "DOM.Iterable",
+      "ScriptHost"
+    ]
+    /* Specify library files to be included in the compilation. */,
+
+    ...
+    // "outFile": "./", /* Concatenate and emit output to single file. */
+    "outDir": "./dist", /* Redirect output structure to the directory. */
+    "rootDir": "./src", /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
+    ...
+  }
+}
+```
+
+- 이제 `rootDir` 를 설정하고 `src`와 같이 파일이 저장되는 폴더를 구체적으로 경로 설정하여, 타입스크립트 컴파일러가 폴더에서 보이지 않도록 한다. (이는 밑에 있는 `include` 옵션으로도 수행할 수 있는 작업이다.) `rootDir` 설정에서 타입스크립트 컴파일러는 `src` 폴더도 확인할 뿐만 아니라, 설정한 프로젝트 구조가 `dist` 폴더에서 유지되고 있는지도 확인한다. 이 옵션을 사용하지 않고 `outDir`를 설정하게 되면, 모든 파일에 `dist` 생성이 적용되므로 주의해야 한다.
+
+- 따라서 `rootDir`와 `outDir`를 모두 사용할 때는 입력파일이 있는 위치와 출력 파일이 생성될 위치에 대해 정확하게 설정을 해야 할 것이다.
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    "lib": [
+      "DOM",
+      "ES6",
+      "DOM.Iterable",
+      "ScriptHost"
+    ]
+    /* Specify library files to be included in the compilation. */,
+
+    ...
+    // "outFile": "./", /* Concatenate and emit output to single file. */
+    "outDir": "./dist", /* Redirect output structure to the directory. */
+    "rootDir": "./src", /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
+    ...
+    "removeComments": true,
+    ...
+  }
+}
+```
+
+- `removeComments` 에 대해서도 살펴보자. 이는 이름만으로도 기능이 짐작 가능하다. `removeComments` 옵션을 설정하면, 타입스크립트 파일의 모든 주석이 컴파일된 자바스크립트 파일에서 '제거' 된다! 이는 파일 크기를 줄이는데 좋은 옵션이 될 수 있다.
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    "lib": [
+      "DOM",
+      "ES6",
+      "DOM.Iterable",
+      "ScriptHost"
+    ]
+    /* Specify library files to be included in the compilation. */,
+
+    ...
+    // "outFile": "./", /* Concatenate and emit output to single file. */
+    "outDir": "./dist", /* Redirect output structure to the directory. */
+    "rootDir": "./src", /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
+    ...
+    "removeComments": true,
+    // "noEmit": true,
+
+    ...
+  }
+}
+```
+
+- `noEmit`은 어떨까? `noEmit`은 자바스크립트 파일을 생성하지 않을 때 설정하는 옵션이다. 타입스크립트 개념이라서 조금 이상하게 보이겠지만, 이 옵션은 파일이 정확한지 확인하고 싶지만 시간을 절약하기 위해 모든 출력 파일을 작성하고 싶지 않을 때 사용한다. 예를 들어, 규모가 큰 프로젝트에서는 이 값을 참(true)으로 설정하여 출력 파일을 가져오지 않고도 타입스크립트 컴파일러가 파일을 검사하고 잠재적 에러를 보고하도록 할 수 있다.
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    "lib": [
+      "DOM",
+      "ES6",
+      "DOM.Iterable",
+      "ScriptHost"
+    ]
+    /* Specify library files to be included in the compilation. */,
+
+    ...
+    // "outFile": "./", /* Concatenate and emit output to single file. */
+    "outDir": "./dist", /* Redirect output structure to the directory. */
+    "rootDir": "./src", /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
+    ...
+    "removeComments": true,
+    // "noEmit": true,
+    // "downlevelIteration": true,
+    ...
+  }
+}
+```
+
+- `downlevelIteration` 옵션은 고급 기능이다. `for` 루프가 있고 생성된 코드가 해당 루프와 다르게 작동하는 경우에만 해당 옵션을 사용해야만 한다.
 
   </br>
