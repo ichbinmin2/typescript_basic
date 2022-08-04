@@ -11,6 +11,7 @@
 - [Working with Source Maps](#소스-맵-작업하기)
 - [rootDir and outDir](#rootDir-및-outDir)
 - [Stop Emitting Files on Compilation Errors](#컴파일-오류-시-파일-방출-중지하기)
+- [Strict 컴파일](#Strict-컴파일)
 
 ### Watch Mode 이용하기
 
@@ -677,3 +678,89 @@ button.addEventListener("click", () => {
 - `noEmitOnError` 옵션은 일반적으로 타입스크립트 파일에 에러가 있는 경우 자바스크립트 파일(컴파일)을 가져오고 싶지 않을 때 설정한다.
 
 </br>
+
+## Strict 컴파일
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    "lib": [
+      "DOM",
+      "ES6",
+      "DOM.Iterable",
+      "ScriptHost"
+    ]
+    /* Specify library files to be included in the compilation. */,
+
+    ...
+    // "outFile": "./", /* Concatenate and emit output to single file. */
+    "outDir": "./dist", /* Redirect output structure to the directory. */
+    "rootDir": "./src", /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
+    ...
+    "removeComments": true,
+    ...
+    "noEmitOnError": true,
+    ...
+    "strict": true
+  }
+}
+```
+
+- `strict` 옵션은 코드에서 우리가 작업하고 있는 매개변수와 값을 명확히 할 수 있도록 해준다.
+
+```ts
+function sendAnalytics(data) {
+  console.log(data);
+}
+
+sendAnalytics("The data");
+```
+
+-
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    "lib": [
+      "DOM",
+      "ES6",
+      "DOM.Iterable",
+      "ScriptHost"
+    ]
+    /* Specify library files to be included in the compilation. */,
+
+    ...
+    // "outFile": "./", /* Concatenate and emit output to single file. */
+    "outDir": "./dist", /* Redirect output structure to the directory. */
+    "rootDir": "./src", /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
+    ...
+    "removeComments": true,
+    ...
+    "noEmitOnError": true,
+    ...
+    "strict": true,
+    "strictNullChecks": true,
+  }
+}
+```
+
+- `strictNullChecks` 옵션은 `null` 값을 잠재적으로 가질 수 잇는 값에 접근하고 작업하는 방식을 타입스크립트에게 매우 엄격하게 알려준다.
+
+### app.js
+
+```js
+const button = document.querySelector("button")!;
+
+button.addEventListener("click", () => {
+  console.log("Clicked");
+});
+```
+
+- `button` 역시 `null`일 수 있다.
+  </br>
