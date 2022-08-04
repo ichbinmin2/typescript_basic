@@ -10,6 +10,7 @@
 - [More Configuration & Compilation Options](#추가-구성-및-컴파일-옵션)
 - [Working with Source Maps](#소스-맵-작업하기)
 - [rootDir and outDir](#rootDir-및-outDir)
+- [Stop Emitting Files on Compilation Errors](#컴파일-오류-시-파일-방출-중지하기)
 
 ### Watch Mode 이용하기
 
@@ -642,4 +643,37 @@ button.addEventListener("click", () => {
 
 - `downlevelIteration` 옵션은 고급 기능이다. `for` 루프가 있고 생성된 코드가 해당 루프와 다르게 작동하는 경우에만 해당 옵션을 사용해야만 한다.
 
-  </br>
+</br>
+
+## 컴파일 오류 시 파일 방출 중지하기
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    "lib": [
+      "DOM",
+      "ES6",
+      "DOM.Iterable",
+      "ScriptHost"
+    ]
+    /* Specify library files to be included in the compilation. */,
+
+    ...
+    // "outFile": "./", /* Concatenate and emit output to single file. */
+    "outDir": "./dist", /* Redirect output structure to the directory. */
+    "rootDir": "./src", /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
+    ...
+    "removeComments": true,
+    ...
+    "noEmitOnError": true,
+    ...
+  }
+}
+```
+
+- `noEmitOnError` 옵션은 일반적으로 타입스크립트 파일에 에러가 있는 경우 자바스크립트 파일(컴파일)을 가져오고 싶지 않을 때 설정한다.
+
+</br>
