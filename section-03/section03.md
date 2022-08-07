@@ -745,12 +745,12 @@ sendAnalytics("The data");
     "noEmitOnError": true,
     ...
     "strict": true,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
   }
 }
 ```
 
-- `strictNullChecks` 옵션은 `null` 값을 잠재적으로 가질 수 잇는 값에 접근하고 작업하는 방식을 타입스크립트에게 매우 엄격하게 알려준다.
+- `strictNullChecks` 옵션은 `null` 값을 잠재적으로 가질 수 있는 값에 접근하고 작업하는 방식을 타입스크립트에게 매우 엄격하게 알려준다.
 
 ### app.js
 
@@ -763,4 +763,209 @@ button.addEventListener("click", () => {
 ```
 
 - `button` 역시 `null`일 수 있다.
+
+```js
+const button = document.querySelector("button"); // ! 타입을 지웠다.
+```
+
+- selector가 있더라도, 해당 스크립트가 실행되는 페이지에 버튼이 없을 수도 있기 때문이다. 따라서 타입스크립트는 html 파일을 살펴보지 않으므로, 성공여부를 판단할 수 없다. 그렇기에 이 코드는 문제가 생길 확률이 높다.
+
+```js
+const button = document.querySelector("button"); // ! 타입을 지웠다.
+
+button.addEventListener("click", () => {
+  console.log("Clicked");
+});
+```
+
+- 만약 `index.html`의 버튼 부분을 주석 처리하고,
+
+```html
+<body>
+  <!-- <button>Click me</button> -->
+</body>
+```
+
+- 해당 스크립트를 실행하면 어떻게 될까? 런타임 에러가 발생할 것이다. `addEventListener`를 `null`로 불러올 수 없기 때문이다. 해당 버튼을 주석처리 했으므로 button은 사라졌고,
+
+```js
+const button = document.querySelector("button"); // ! 타입을 지웠다.
+```
+
+- button이 없으므로 이 값은 null이 될 것이다. 그리고 이는 `strictNullChecks`를 true로 설정하여 방지할 수 있는 실수다.
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    "lib": [
+      "DOM",
+      "ES6",
+      "DOM.Iterable",
+      "ScriptHost"
+    ]
+    /* Specify library files to be included in the compilation. */,
+
+    ...
+    // "outFile": "./", /* Concatenate and emit output to single file. */
+    "outDir": "./dist", /* Redirect output structure to the directory. */
+    "rootDir": "./src", /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
+    ...
+    "removeComments": true,
+    ...
+    "noEmitOnError": true,
+    ...
+    "strict": true,
+    "strictNullChecks": true,
+  }
+}
+```
+
+- strict를 true로 설정하면 `strictNullCheck`도 자동으로 설정되어 타입스크립트 위의 불상사를 대비하여 문제를 해결할 수 있도록 해준다. 물론 여기서 쉬운 해결책은 느낌표 연산자이지만 말이다.
+
+```json
+"strict": true,
+// "strictNullChecks": true,
+// strict를 true로 설정하면 `strictNullCheck`도 자동으로 설정
+```
+
+- 느낌표 `!` 연산자는 타입스크립트가 개발자에게 해당 버튼이 존재하거나 이 연산이 null이 아닌 값을 반환한다는 걸 알 수 있게 해주는 역할을 한다. 보통 html 코드를 작업하면서 `button` 엘리먼트, 즉 여기 있는 selector가 작동되는 `button`이 있음을 알고 있는 경우가 많기에 그저 느낌표 연산자를 사용하면 될 것이다.
+
+```js
+const button = document.querySelector("button");!
+```
+
+- 작동할지 여부를 알 수 없는데 작동이 잘 되기를 원하는 경우에는 `if` 문을 사용해서 문제가 있을지도 모르는 코드를 감싸는 게 좋다.
+
+```js
+const button = document.querySelector("button");
+
+if (button) {
+  // truthy
+  button.addEventListener("click", () => {
+    console.log("Clicked");
+  });
+}
+```
+
+- 이렇게 `if`문으로 감싸게 되면, 느낌표 연산자가 없어도 에러가 발생하지 않게 된다. 이런 방식은 깔끔해보이지만 무언가 존재한다는 것이 확실하다면 느낌표 연산자를 사용하는 것도 꽤 괜찮은 옵션이다.
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    "lib": [
+      "DOM",
+      "ES6",
+      "DOM.Iterable",
+      "ScriptHost"
+    ]
+    /* Specify library files to be included in the compilation. */,
+
+    ...
+    // "outFile": "./", /* Concatenate and emit output to single file. */
+    "outDir": "./dist", /* Redirect output structure to the directory. */
+    "rootDir": "./src", /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
+    ...
+    "removeComments": true,
+    ...
+    "noEmitOnError": true,
+    ...
+    "strict": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,           /* Enable strict checking of function types. */
+    // "strictBindCallApply": true,           /* Enable strict 'bind', 'call', and 'apply' methods on functions. */
+    // "strictPropertyInitialization": true,  /* Enable strict checking of property initialization in classes. */
+    // "noImplicitThis": true,                /* Raise error on 'this' expressions with an implied 'any' type. */
+    // "alwaysStrict": true,                  /* Parse in strict mode and emit "use strict" for each source file. */
+
+  }
+}
+```
+
+- `strictFunctionTypes`은 보다 고급 설정으로, 많은 애플리케이션에서 볼 수 없는 틈새 박스를 잡는다. 이는 설정 중인 함수 타입과 관련이 있으며, 함수 내의 타입은 아니다. 그러나, 매개 변수와 반환 값에 대해 함수가 어떻게 표시되는지 정의되고, 함수 타입을 생성하는 경우 박스를 입력할 수 있다.
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    "lib": [
+      "DOM",
+      "ES6",
+      "DOM.Iterable",
+      "ScriptHost"
+    ]
+    /* Specify library files to be included in the compilation. */,
+
+    ...
+    // "outFile": "./", /* Concatenate and emit output to single file. */
+    "outDir": "./dist", /* Redirect output structure to the directory. */
+    "rootDir": "./src", /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
+    ...
+    "removeComments": true,
+    ...
+    "noEmitOnError": true,
+    ...
+    "strict": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,           /* Enable strict checking of function types. */
+    "strictBindCallApply": true,           /* Enable strict 'bind', 'call', and 'apply' methods on functions. */
+    // "strictPropertyInitialization": true,  /* Enable strict checking of property initialization in classes. */
+    // "noImplicitThis": true,                /* Raise error on 'this' expressions with an implied 'any' type. */
+    // "alwaysStrict": true,                  /* Parse in strict mode and emit "use strict" for each source file. */
+
+  }
+}
+```
+
+- `strictBindCallApply`는 결합하고 호출하고 적용하는 작업에 유용하다.
+
+```js
+const button = document.querySelector("button");
+
+function clickHandler() {
+  console.log("Clicked");
+}
+
+if (button) {
+  button.addEventListener("click", clickHandler);
+}
+```
+
+- `addEventListener` 이벤트리스너로 `clickHanlder` 함수를 실행하면서, 특정 인수를 전달하거나 어떤 키워드를 특정 값으로 설정하고자 한다.
+
+```js
+const button = document.querySelector("button");
+
+function clickHandler(message: string) {
+  console.log("Clicked" + message);
+}
+
+if (button) {
+  button.addEventListener("click", clickHandler);
+}
+```
+
+- 문자열 인자를 받는 `clickHandler` 함수에 전달할 인자를 재구성하고자 할 때 `bind()`를 사용하면 된다. `bind()`는 우리가 이 키워드에 결합(bind)하고자 하는 항목도 취하는 첫 번째 함수이다.
+
+```js
+const button = document.querySelector("button");
+
+function clickHandler(message: string) {
+  console.log("Clicked" + message);
+}
+
+if (button) {
+  button.addEventListener("click", clickHandler.bind(null));
+}
+```
+
+- `null` 이란 값에 결합(bind)하고자 하면 에러가 발생한다. 그리고 해당 에러는 `strictBindCallApply`를 false로 설정하면 방지할 수 있다.
+
   </br>
