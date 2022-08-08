@@ -12,6 +12,7 @@
 - [rootDir and outDir](#rootDir-및-outDir)
 - [Stop Emitting Files on Compilation Errors](#컴파일-오류-시-파일-방출-중지하기)
 - [Strict 컴파일](#Strict-컴파일)
+- [코드 품질 옵션](#코드-품질-옵션)
 
 ### Watch Mode 이용하기
 
@@ -1001,6 +1002,16 @@ if (button) {
 
   }
 }
+```
+
+  </br>
+
+## 코드 품질 옵션
+
+```json
+  "noUnusedLocals": true,                /* Report errors on unused locals. */
+  "noUnusedParameters": true,            /* Report errors on unused parameters. */
+  "noImplicitReturns": true,
 ```
 
   </br>
