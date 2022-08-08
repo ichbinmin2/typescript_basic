@@ -966,6 +966,41 @@ if (button) {
 }
 ```
 
-- `null` 이란 값에 결합(bind)하고자 하면 에러가 발생한다. 그리고 해당 에러는 `strictBindCallApply`를 false로 설정하면 방지할 수 있다.
+- `null` 이란 값에 결합(bind)하고자 하면 에러가 발생한다. 그리고 해당 에러는 `strictBindCallApply`를 false로 설정하면 방지할 수 있다. 이 옵션의 기능은 기본적으로 호출하려는 함수가 `bind`, `call`, `apply` 중 무엇에 해당하는지 확인하고 여기에 함수를 제대로 설정했는지를 확인한다. `bind`가 지정된 `clickHandler`에서 매개변수가 필요한 경우 이를 구성하지 않으면 에러가 발생한다. `bind`, `call`, `apply` 를 사용하면서 실수하지 않도록해주는 아주 유용한 옵션이다.
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    "lib": [
+      "DOM",
+      "ES6",
+      "DOM.Iterable",
+      "ScriptHost"
+    ]
+    /* Specify library files to be included in the compilation. */,
+
+    ...
+    // "outFile": "./", /* Concatenate and emit output to single file. */
+    "outDir": "./dist", /* Redirect output structure to the directory. */
+    "rootDir": "./src", /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
+    ...
+    "removeComments": true,
+    ...
+    "noEmitOnError": true,
+    ...
+    "strict": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,           /* Enable strict checking of function types. */
+    "strictBindCallApply": true,           /* Enable strict 'bind', 'call', and 'apply' methods on functions. */
+    // "strictPropertyInitialization": true,  /* Enable strict checking of property initialization in classes. */
+    // "noImplicitThis": true,                /* Raise error on 'this' expressions with an implied 'any' type. */
+    // "alwaysStrict": true,                  /* Parse in strict mode and emit "use strict" for each source file. */
+
+  }
+}
+```
 
   </br>
