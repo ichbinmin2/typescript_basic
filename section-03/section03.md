@@ -54,7 +54,7 @@ tsc -w
 
 </br>
 
-## 파일 포함 및 제외하기
+### 파일 포함 및 제외하기
 
 - 여러 파일로 작업할 때 바닐라 자바스크립트의 모듈을 사용하여 파일을 가져올 수가 있다. 지금의 프로젝트를 살펴보면, `index.html`을 통해 두 파일을 한 꺼번에 가져오고 있다.
 
@@ -65,11 +65,11 @@ tsc -w
 
 - 앞으로 소개할 방식을 사용하여 이제 두 개의 파일을 프로젝트로서 관리할 수 있고 여러 파일도 컴파일 할 수 있게 된다. `tsconfig.json` 파일을 살펴보자.
 
-### `tsconfig.json`
+#### `tsconfig.json`
 
 - `tsconfig.json` 파일은 프로젝트의 파일들을 어떻게 컴파일 해야 하는지 타입스크립트에게 알려주는 역할을 한다. 해당 파일의 `compilerOptions` 설정 다음에 우리가 설정할 수 있는 옵션에 대해서 알아보자.
 
-### exclude
+#### exclude
 
 - 이 옵션들은 컴파일러나 컴파일 단계 동작에 영향을 미치지 않고 대신 컴파일러가 이 프로젝트에서 작동하는 방식을 의미한다.
 
@@ -135,7 +135,7 @@ tsc -w
 
 - `include`는 `exclude`와 반대 개념의 작업을 수행한다. `include`는 컴파일 과정에 포함시킬 파일을 타입스크립트에 의도적으로 알려서 `include` 옵션에 포함되지 않은 그 어떤 파일이나 폴더도 컴파일되지 않도록 한다. 하지만 `include` 설정을 하면 컴파일하고자 하는 '모든' 항목을 포함시켜야 한다. `include` 설정을 했을 때 포함되지 않는 파일은 컴파일 되지 않기 때문에 주의해서 사용해야만 한다.
 
-### files
+#### files
 
 ```json
   "files": [
@@ -145,17 +145,17 @@ tsc -w
 
 - `files` 설정은 `include`와 다소 비슷하지만 `include`는 제외하고자 하는 항목으로 전체 폴더를 지정할 수 있지만, `files` 설정은 컴파일 하고자 하는 '개발 파일'만을 지정할 수 있다. 해당 옵션은 규모가 작은 프로젝트에 사용하면 좋을 것이다.
 
-### 정리
+#### 정리
 
 - 실제로는 많은 옵션 기능을 사용하지 않으므로, 기본 컴파일 기능이나 프로젝트 관리 옵션만 사용하게 될 것이다. 물론 컴파일러 자체와 컴파일 단계에서의 작동 방식에 대해 지정할 수 있는 방법은 다양하다.
 
 </br>
 
-## 컴파일 대상 설정하기
+### 컴파일 대상 설정하기
 
 - 이제 컴파일러로 파일을 관리하는 방법을 알아보자. `tsconfig.json` 파일의 첫 번째 옵션인 `compilerOptions`를 살펴보면, 흥미로운 지점이 많다. `compilerOptions`은 타입스크립트 코드가 컴파일되는 방식을 관리하는 옵션이다. `compilerOptions` 에서는 어떤 파일을 컴파일할지, 그리고 컴파일되는 파일이 타입스크립트로 어떻게 처리되어야 하는지를 설정할 수 있다. 살펴보면, 기본적으로 설정된 옵션(주석 처리된)들이 많은 걸 알 수 있다. 각각의 옵션에는 주석처리와 함께 간단한 설명이 있는데, 대부분의 옵션들은 실무 프로젝트에서 그다지 중요하지 않을 가능성이 높으므로 모든 옵션을 설정하거나 고려할 필요는 없다.
 
-### compilerOptions의 target 옵션
+#### compilerOptions의 target 옵션
 
 ```json
 {
@@ -191,14 +191,14 @@ console.log(userName);
 
 - `app.ts`는 let과 const를 사용하고 있는데, `app.js`는 var를 이용하고 있는 걸 알 수 있다. 이는 `target` 옵션의 기본 값은 `es5`이고, `es5`에는 let과 const가 포함되어 있지 않기 때문에 일어난 일이다. 여기서 알 수 있는 좋은 점은 타입스크립트를 사용하여 이전 브라우저에서도 작동하는 코드를 생성할 수 있다는 점이다.
 
-### 정리
+#### 정리
 
 - 물론 `target` 옵션을 사용하는 것은 전적으로 선택에 달려있다. 그리고 타입스크립트로 굳이 이런 작업을 수행하지 않아도 된다. 자바스크립트 변환을 지원하는 다른 빌드 도구들도 충분히 많기 때문이다. 혹은 어플리케이션이 최신 브라우저에서만 실행되어야 하기 때문에 최신 브라우저에서만 작동하는 코드로 구성해야 하는 경우도 있을 때라면 굳이 `target` 옵션을 이렇게 사용할 필요는 없을 것이다.
 - 당연히, `target` 옵션에서 기본 값으로 선택하는 자바스크립트 버전이 최신일 수록 생성되는 코드는 더 간결해지며, 이는 타입스크립트가 점차 더 적은 양의 코드를 컴파일하며 존재하지 않는 기능에 대해 작업을 해야하는 경우가 줄어들기 때문일 것이다. 따라서 컴파일된 코드는 `target` 옵션 값이 최신 버전일 수록 더 간결하고 짧아진다.
 
   </br>
 
-## TypeScript 핵심 라이브러리 이해하기
+### TypeScript 핵심 라이브러리 이해하기
 
 ```json
 {
@@ -254,7 +254,7 @@ button.addEventListener("click", () => {
 
 - 타입스크립트가 이 모든 것을 알고 작동시키는 이유는 바로 `lib` 옵션 때문이다..
 
-### compilerOptions의 lib 옵션
+#### compilerOptions의 lib 옵션
 
 ```json
 {
@@ -340,7 +340,7 @@ button.addEventListener("click", () => {
 
 </br>
 
-## 추가 구성 및 컴파일 옵션
+### 추가 구성 및 컴파일 옵션
 
 ```json
 {
@@ -416,7 +416,7 @@ button.addEventListener("click", () => {
 
 </br>
 
-## 소스 맵 작업하기
+### 소스 맵 작업하기
 
 ```json
 {
@@ -486,7 +486,7 @@ button.addEventListener("click", () => {
 
 </br>
 
-## rootDir 및 outDir
+### rootDir 및 outDir
 
 - `dist` 폴더는 모든 출력값을 보관하는 작업을 수행한다. 모든 자바스크립트 파일과 `src` 폴더에 모든 타입스크립트 파일이 보관되므로 `dist`와 `src` 폴더를 셍성하고, 타입스크립트 파일을 전부 `src` 폴더로 옮긴다. 루트 위치에 있는 자바스크립트 폴더를 삭제하고 `tsc` 명령어를 사용해서 `.ts` 파일을 다시 컴파일한다. 타입스크립트 디컴파일러는 하위 폴더를 들여다보지만, 출력값은 입력파일 옆에 있기 때문에 이 입력 파일을 `outDir`로 제어할 수 있다.
 
@@ -647,7 +647,7 @@ button.addEventListener("click", () => {
 
 </br>
 
-## 컴파일 오류 시 파일 방출 중지하기
+### 컴파일 오류 시 파일 방출 중지하기
 
 ```json
 {
@@ -680,7 +680,7 @@ button.addEventListener("click", () => {
 
 </br>
 
-## Strict 컴파일
+### Strict 컴파일
 
 ```json
 {
@@ -710,17 +710,88 @@ button.addEventListener("click", () => {
 }
 ```
 
-- `strict` 옵션은 코드에서 우리가 작업하고 있는 매개변수와 값을 명확히 할 수 있도록 해준다.
+- `strict` 옵션은 코드에서 우리가 작업하고 있는 매개변수와 값을 명확히 할 수 있도록 해준다. 이 ` "strict": true` 옵션으로 모든 ` "strict"` 유형의 검사 옵션을 사용할 수 있다. 이 옵션읕 설정하면 모든 옵션을 개별적으로 설정하는 것과 같으므로 옵션을 하나씩 설정하거나, ` "strict": true` 만 설정할 수도 있다.
+
+```json
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es6"
+    "module": "commonjs"
+    "lib": [
+      "DOM",
+      "ES6",
+      "DOM.Iterable",
+      "ScriptHost"
+    ]
+    /* Specify library files to be included in the compilation. */,
+
+    ...
+    // "outFile": "./", /* Concatenate and emit output to single file. */
+    "outDir": "./dist", /* Redirect output structure to the directory. */
+    "rootDir": "./src", /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
+    ...
+    "removeComments": true,
+    ...
+    "noEmitOnError": true,
+    ...
+    // "strict": true,
+    "noImplicitAny": false
+  }
+}
+```
+
+#### noImplicitAny
+
+- 먼저, `noImplicitAny` 옵션부터 살펴보자. 이 옵션은 더 나은 코드를 작성하는 데 도움이 되는 아주 흥미로운 옵션이다.
 
 ```ts
 function sendAnalytics(data) {
+  // data에서 타입에러 발생
   console.log(data);
 }
 
 sendAnalytics("The data");
 ```
 
--
+- 이렇게 코드를 작성하면, 벌써 문자열에 대한 에러를 보고 하게 된다. 매개변수 데이터는 암묵적으로 `any` 타입을 지니기에 해당 옵션과 연관된 것처럼 보인다. 해당 옵션을 false 로 설정하는 경우 에러는 IDE 에서나 코드를 컴파일 할 때도 발생하지 않게 된다. 그럼 이 옵션의 기능은 무엇일까? 이 옵션은 코드에서 우리가 작업하고 있는 '매개변수'와 '값'을 명확히 할 수 있도록 해준다.
+
+```ts
+function sendAnalytics(data) {
+  // data에서 타입에러 발생
+  console.log(data);
+}
+
+sendAnalytics("The data");
+```
+
+- 여기서는 매개변수로서 얻는 데이터 유형에 대한 어떤 정보도 타입스크립트에 제공되지 않는다. 만약 타입스크립트가 이를 추론할 수 있다면 당연히 괜찮다. 하지만 어떤 타입이 추론할 수 있을까? 확실한 건 해당 파일이 실행되기 전에 `sendAnalytics`이 먼저 선언된다는 점이다. 따라서 함수가 생성되는 시점에는 어떤 결과가 나타날지 알 수 없게 된다.
+
+```ts
+function sendAnalytics(data: string) {
+  // data에서 타입에러 발생
+  console.log(data);
+}
+
+sendAnalytics("The data");
+```
+
+- 그렇기에 타입을 선언하고 여기서 어떤 타입을 사용할지 명확히 함으로써 타입에러를 해결할 수 있다.
+
+```js
+let logged;
+
+function sendAnalytics(data: string) {
+  console.log(data);
+  logged = true;
+}
+
+sendAnalytics("The data");
+```
+
+- 그리고 `logged` 변수를 선언하고 값을 함수 안에서 true 로 설정하면 해당 선언에 대한 에러가 발생하지 않게 된다.
+
+#### strictNullChecks
 
 ```json
 {
@@ -753,7 +824,7 @@ sendAnalytics("The data");
 
 - `strictNullChecks` 옵션은 `null` 값을 잠재적으로 가질 수 있는 값에 접근하고 작업하는 방식을 타입스크립트에게 매우 엄격하게 알려준다.
 
-### app.js
+#### app.js
 
 ```js
 const button = document.querySelector("button")!;
@@ -763,7 +834,7 @@ button.addEventListener("click", () => {
 });
 ```
 
-- `button` 역시 `null`일 수 있다.
+- `button` 역시 `null`일 수 있다. 여기서 쉬운 해결책은 느낌표 연산자를 뒤에 붙이는 일이다.
 
 ```js
 const button = document.querySelector("button"); // ! 타입을 지웠다.
@@ -969,49 +1040,16 @@ if (button) {
 
 - `null` 이란 값에 결합(bind)하고자 하면 에러가 발생한다. 그리고 해당 에러는 `strictBindCallApply`를 false로 설정하면 방지할 수 있다. 이 옵션의 기능은 기본적으로 호출하려는 함수가 `bind`, `call`, `apply` 중 무엇에 해당하는지 확인하고 여기에 함수를 제대로 설정했는지를 확인한다. `bind`가 지정된 `clickHandler`에서 매개변수가 필요한 경우 이를 구성하지 않으면 에러가 발생한다. `bind`, `call`, `apply` 를 사용하면서 실수하지 않도록해주는 아주 유용한 옵션이다.
 
-```json
-{
-  "compilerOptions": {
-    /* Basic Options */
-    "target": "es6"
-    "module": "commonjs"
-    "lib": [
-      "DOM",
-      "ES6",
-      "DOM.Iterable",
-      "ScriptHost"
-    ]
-    /* Specify library files to be included in the compilation. */,
-
-    ...
-    // "outFile": "./", /* Concatenate and emit output to single file. */
-    "outDir": "./dist", /* Redirect output structure to the directory. */
-    "rootDir": "./src", /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
-    ...
-    "removeComments": true,
-    ...
-    "noEmitOnError": true,
-    ...
-    "strict": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,           /* Enable strict checking of function types. */
-    "strictBindCallApply": true,           /* Enable strict 'bind', 'call', and 'apply' methods on functions. */
-    // "strictPropertyInitialization": true,  /* Enable strict checking of property initialization in classes. */
-    // "noImplicitThis": true,                /* Raise error on 'this' expressions with an implied 'any' type. */
-    // "alwaysStrict": true,                  /* Parse in strict mode and emit "use strict" for each source file. */
-
-  }
-}
-```
-
   </br>
 
-## 코드 품질 옵션
+### 코드 품질 옵션
 
 ```json
   "noUnusedLocals": true,                /* Report errors on unused locals. */
   "noUnusedParameters": true,            /* Report errors on unused parameters. */
   "noImplicitReturns": true,
 ```
+
+- 이 세가지 옵션은 코드 품질을 향상 시켜주는 옵션들로, 기본적으로 사용되지 않은 변수가 있으면 타입스크립트가 에러를 표시한다. 예를 들어, 이 세가지 옵션을 true로 설정해놓으면 break 키워드를 잊어버릴 수도 있는 switch 문을 입력하도록 도와준다. 빨간 색이 아닌 노란색 선으로 표시되는 이유는 사실상 에러라기 보다는 경고나 힌트에 더 가깝다. 따라서 컴파일 하면 에러가 발생한다. 타입스크립트는 에러로만 표시하기 때문이다. 타입스크립트는 사용하지 않은 지역 변수나 전역 변수를 원치않는다고 표시할 것이다.
 
   </br>
