@@ -1,7 +1,7 @@
 class Department {
   name: string;
 
-  // 예약어
+  // 예약어 생성자
   constructor(n: string) {
     this.name = n;
   }
