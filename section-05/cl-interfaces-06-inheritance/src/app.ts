@@ -36,10 +36,17 @@ const accounting = new ITDepartment('id', "Accounting") => 가능.
  * Department 클래스가 가진 모든 것을 자동으로 가져오기 때문이다.
 */
 
-// extends로 Department를 상속 2
+// Department 를 상속 받는 새로운 클래스 ITDepartment
+/* 클래스 안이 비어 있어도 {} 제대로 작동한다.
+ * 왜냐하면, ITDepartment는 Department 클래스를 상속받기 때문에
+ * 생성자를 포함하여, 기본 Department 클래스가 가진 모든 것을 자동으로 가져오기 때문이다.
+ * 따라서 상속 받은 클래스에 고유 생성자를 추가하지 않는 한, 하위 클래스에 대한 기본 클래스는 생성자이므로
+ * 하위 클래스를 인스턴스할 때 이 생성자(new ITDepartment)가 자동으로 사용된다.
+ * 그렇기 때문에 기본 클래스 생성자를 ITDepartment 에 전달되는 인수를 사용하여 호출할 수 있다.
+ */
 class ITDepartment extends Department {
   // '하나'의 클래스만 상속할 수 있다.
-  admins: string[];
+  admins: string[]; // 고유 생성자 추가
 
   // ITDepartment 만의 고유 생성자 생성
   constructor(id: string, admins: string[]) {
@@ -70,7 +77,7 @@ console.log(it);
 /** 전체 Department 클래스의 생성자들을 비롯하여,
  * ITDepartment 클래스의 고유 생성자인 this.admins도 함꼐 출력된다. **/
 
-// extends로 Department를 상속 3
+// Department 를 상속 받는 새로운 클래스 AccountingDepartment
 class AccountingDepartment extends Department {
   constructor(id: string, private reports: string[]) {
     // 고유 생성자 reports 추가
@@ -79,12 +86,12 @@ class AccountingDepartment extends Department {
     // this.reports = reports 는 축약코드로서 생략 가능
   }
 
-  // 새로운 메소드 1
+  // 고유 메소드 1
   addReport(text: string) {
     this.reports.push(text);
   }
 
-  // 새로운 메소드 2
+  // 고유 메소드 2
   printReports() {
     console.log(this.reports);
   }
