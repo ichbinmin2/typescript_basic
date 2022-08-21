@@ -1,11 +1,26 @@
 class Department {
   // private readonly id: string;
   // private name: string;
+
+  /** ⚡️ static 속성 */
+  static fiscalYear = 2022;
+  /** ⚡️ static 속성은 인스턴스에서 유효하지 않는다.
+   * 정적 속성과 정적 메소드의 전체적인 개념이 인스턴스와 분리되어 있기 때문이다.
+   */
+
   protected employees: string[] = [];
 
   constructor(private readonly id: string, public name: string) {
-    // this.id = id;
-    // this.name = n;
+    // console.log(this.fiscalYear) => 🚨 접근 불가능
+    // console.log(Department.fiscalYear); => ⚡️ 접근 가능
+  }
+
+  /** ⚡️ static 메소드 : 인스턴스화가 아니라, createEmployee 를 접근할 수 있는 정적 메소드로 만드는 방법 */
+  static createEmployee(name: string) {
+    /** ⚡️ static 속성을 추가하고, 객체를 반환해야 한다. */
+    return {
+      name: name,
+    };
   }
 
   describe(this: Department) {
@@ -53,6 +68,7 @@ class AccountingDepartment extends Department {
   }
 
   set mostRecentReport(value: string) {
+    // get 을 사용하기 전에 set 을 해주어야 한다.
     if (!value) {
       throw new Error("Please pass in a valid value!");
     }
@@ -83,6 +99,12 @@ class AccountingDepartment extends Department {
   }
 }
 
+/** new 키워드 없이 직접 클래스에서 호출함
+ * 이는 클래스를 '그룹화' 메커니즘으로 사용하는 것임.
+ */
+const employee1 = Department.createEmployee("Max");
+console.log("static :", employee1, Department.fiscalYear);
+
 const it = new ITDepartment("d1", ["Max"]);
 
 it.addEmployee("Max");
@@ -101,7 +123,7 @@ const accounting = new AccountingDepartment("d2", []);
 accounting.mostRecentReport = "Year End Report";
 accounting.addReport("Something went wrong...");
 /** "get" 메소드 */
-console.log(accounting.mostRecentReport); // => 속성으로 접근!
+console.log(accounting.mostRecentReport); // => 함수 실행이 아닌, 속성으로 접근!
 
 accounting.addEmployee("Max");
 accounting.addEmployee("Manu");
