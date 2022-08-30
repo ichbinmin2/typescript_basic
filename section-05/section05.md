@@ -18,6 +18,7 @@
 - [첫 번째 인터페이스](#첫-번째-인터페이스)
 - [클래스와 인터페이스 사용하기](#클래스와-인터페이스-사용하기)
 - [왜 인터페이스인가](#왜-인터페이스인가)
+- [읽기 전용 인터페이스 속성](#읽기-전용-인터페이스-속성)
 
 ### 클래스란 무엇인가
 
@@ -61,8 +62,6 @@ let user1: Greetable;
 
 user1 = new Person("Max");
 user1.greet("Hi");
-
-user1.greet("hi");
 ```
 
 - `greet()` 메소드를 예를 들어보자. 클래스가 `greet` 메소드를 가지고 있고, 다른 클래스도 이를 가지고 있는지를 확인하고자 할 때, 이 메소드(`greet`)가 존재하게 해주는 인터페이스를 구현하면 된다. 그렇게 되면, 클래스 간에 기능을 쉽게 공유할 수 있게 되는데, 모든 클래스는 메소드가 호출 될 때 실행되어야 하는 정확한 코드, 즉 고유한 구현을 추가해야만 하기 떄문이다.
@@ -85,5 +84,108 @@ class Person implements Greetable {
 ```
 
 - 결국 무엇을 기반으로 하든 `Greetable`이 `greet` 메소드를 작성하게끔 한다는 의미이다.
+
+</br>
+
+### 읽기 전용 인터페이스 속성
+
+```ts
+interface Greetable {
+  name: string;
+
+  greet(phrase: string): void;
+}
+```
+
+- 인터페이스 내에는 `readonly` 제어자를 추가할 수 있지만 다만 `public`이나 `private`는 지정할 수 없다.
+
+```ts
+interface Greetable {
+  readonly name: string;
+
+  greet(phrase: string): void;
+}
+```
+
+- `readonly` 를 추가하여 인터페이스를 기반으로 구축하는 모든 속성이 한 번만 설정되어야 하며 이후에는 읽기 전용으로 설정하여 객체가 초기화되면 변경할 수 없도록 설정할 수 있다.
+
+```ts
+type Greetable = {
+  readonly name: string;
+
+  greet(phrase: string): void;
+};
+```
+
+- 인터페이스 대신 type 을 대신 사용하는 경우에도 마찬가지이다.
+
+```ts
+type Greetable = {
+  readonly name: string;
+
+  greet(phrase: string): void;
+};
+```
+
+```ts
+interface Greetable {
+  readonly name: string;
+
+  greet(phrase: string): void;
+}
+```
+
+- 이 두가지는 아주 비슷하지만, '객체'를 사용하여 타입을 지정하고자 할 때 즉 작업을 수행하고자 한다면 일반적으로 인터페이스를 더 자주 사용한다는 것을 기억하자.
+
+```ts
+interface Greetable {
+  name: string;
+
+  greet(phrase: string): void;
+}
+
+class Person implements Greetable {
+  name: string;
+  age: 30 | undefined;
+
+  constructor(n: string) {
+    this.name = n;
+  }
+
+  greet(phrase: string) {
+    console.log(phrase + this.name);
+  }
+}
+
+let user1: Greetable;
+
+user1 = new Person("Max");
+user1.greet("Hi");
+```
+
+- 우리는 class에는 `readonly` 속성을 추가하지 않았다. 그럼에도 아래의 경우처럼
+
+```ts
+user1.name = "Min";
+```
+
+- `name`으로 접근해서 이름을 다른 값으로 설정하려 하면 에러가 발생하는 걸 알 수 있다. 우리가 설정했듯 `name`은 읽기 전용이기 때문이다.
+
+```ts
+class Person implements Greetable {
+  name: string;
+  age: 30 | undefined;
+
+  constructor(n: string) {
+    this.name = n;
+  }
+
+  greet(phrase: string) {
+    console.log(phrase + this.name);
+  }
+}
+```
+
+- `Person` 클래스에 `readonly`를 추가하지 않았음에도 클래스는 `Greetable`을 구현한다는 것을 인지하고 있기에 `name` 속성이 읽기 전용임을 자동으로 추론하게 된다.
 
 </br>

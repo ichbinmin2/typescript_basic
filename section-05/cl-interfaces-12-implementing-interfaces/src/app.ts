@@ -29,7 +29,7 @@
  */
 
 interface Greetable {
-  name: string /* 기본 값을 할당할 수 없다. */;
+  readonly name: string /* 기본 값을 할당할 수 없다. */;
 
   /** 1. 만약 여기서 age를 지운다면 */
   greet(phrase: string): void;
