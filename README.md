@@ -11,4 +11,8 @@
 
 - [The TypeScript Compiler (and its Configuration)](https://github.com/ichbinmin2/typescript_basic/blob/main/section-03/section03.md)
 
+## Class & Interface
+
+- [Class & Interface](https://github.com/ichbinmin2/typescript_basic/blob/main/section-05/section05.md)
+
 </br>
